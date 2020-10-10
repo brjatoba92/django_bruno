@@ -17,9 +17,8 @@ import dj_database_url
 
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-from decouple import config
+from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -80,7 +79,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangobrunopy.wsgi.application'
 
+# Configurado Django Debug-Tolbar
 
+INTERNAL_IPS = config('INTERNAL_IPS', cast=Csv(), default='127.0.0.1')
+
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -154,6 +159,7 @@ if AWS_ACCESS_KEY_ID:
     AWS_S3_CUSTOM_DOMAIN = None
 
     COLLECTFAST_ENABLED = True
+    COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
 
     AWS_DEFAULT_ACL = 'private'
 
